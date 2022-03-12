@@ -27,6 +27,29 @@ namespace Selenium.Extensions
                     throw new Exception($"**Nothing to select. Dropdown Empty!!!!");
             }
         }
+        public static IEnumerable<string> GetAllValuesFromDropdown(this SelectElement elt)
+        {
+            List<string> Values = new List<string>();
+            foreach (var option in elt.Options)
+            {
+                Values.Add(option.GetValueForElement());
+            }
+            return Values;
+        }
+        static IEnumerable<string> GetAllTextFromDropdown(this SelectElement elt)
+        {
+            List<string> Texts = new List<string>();
+            foreach (var option in elt.Options)
+            {
+                Texts.Add(option.Text);
+            }
+            return Texts;
+        }
+        public static long GetChildrenCount(this IWebElement element, IWebDriver driver)
+        {
+            var jsDriver = (IJavaScriptExecutor)driver;
+            return (long)jsDriver.ExecuteScript("return arguments[0].children.length", element);
+        }
         public static void SelectValueFromDropdown(this IWebElement element, string valueToSelect)
         {
             var selectElement = new SelectElement(element);
@@ -34,14 +57,6 @@ namespace Selenium.Extensions
                 selectElement.SelectByValue(valueToSelect);
             else
                 throw new Exception($"The value intended to select-'{valueToSelect}' is not contained in the dropdown");
-        }
-        public static void SelectFromDropdown(this IWebElement element, string optionToSelect)
-        {
-            var selectElement = new SelectElement(element);
-            if (selectElement.GetAllValuesFromDropdown().Any(s => s.Contains(optionToSelect)))
-                selectElement.SelectByValue(optionToSelect);
-            else
-                throw new Exception($"There's no option in the dropdown that matches-'{optionToSelect}'!!!***");
         }
         public static void SelectTextFromDropdown(this IWebElement element, string textToSelect)
         {
@@ -65,29 +80,6 @@ namespace Selenium.Extensions
             {
                 return false;
             }
-        }
-        public static IEnumerable<string> GetAllValuesFromDropdown(this SelectElement elt)
-        {
-            List<string> Values = new List<string>();
-            foreach (var option in elt.Options)
-            {
-                Values.Add(option.GetValueForElement());
-            }
-            return Values;
-        }
-        static IEnumerable<string> GetAllTextFromDropdown(this SelectElement elt)
-        {
-            List<string> Texts = new List<string>();
-            foreach (var option in elt.Options)
-            {
-                Texts.Add(option.Text);
-            }
-            return Texts;
-        }
-        public static long GetChildrenCount(this IWebElement element, IWebDriver driver)
-        {
-            var jsDriver = (IJavaScriptExecutor)driver;
-            return (long)jsDriver.ExecuteScript("return arguments[0].children.length", element);
         }
         public static void EnterText(this IWebElement elt, string txt)
         {
